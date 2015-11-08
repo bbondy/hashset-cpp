@@ -54,6 +54,7 @@
     "type": "executable",
     "sources": [
       "./test/test-main.cpp",
+      "./test/hashset-test.cpp",
       "HashSet.cpp",
       "HashSet.h",
     ],
