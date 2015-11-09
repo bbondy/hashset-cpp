@@ -25,7 +25,18 @@ public:
     return _size;
   }
 
+  // Serializes a the parsed data and bloom filter data into a single buffer.
+  // The returned buffer should be deleted by the caller.
+  // The size is returned in the out parameter if it's needed to write to a file.
+  char *serialize(int &size);
+  // Deserializes the buffer, a size is not needed since a serialized buffer is self described
+  // Memory passed in will be used by this instance directly without copying it in.
+  void deserialize(char *);
+
+
 private:
+  void cleanup();
+  uint32_t serializeBuckets(char *buffer);
   uint32_t bucketCount;
   HashFn hashFn;
   HashItem **buckets;

@@ -1,5 +1,6 @@
 #include "HashSet.h"
 #include <string.h>
+#include <stdio.h>
 
 HashFn defaultHashSetFn = HashFn(17);
 
@@ -10,17 +11,22 @@ HashSet::HashSet(uint32_t bucketCount, HashFn hashFn)
 }
 
 HashSet::~HashSet() {
+  cleanup();
+}
+
+void HashSet::cleanup() {
   if (buckets) {
     for (uint32_t i = 0; i < bucketCount; i++) {
        HashItem *hashItem = buckets[i];
        while (hashItem) {
          HashItem *tempHashItem = hashItem;
          hashItem = hashItem->next;
-         delete[] tempHashItem->data;
          delete tempHashItem;
        }
     }
     delete[] buckets;
+    buckets = nullptr;
+    _size = 0;
   }
 }
 
@@ -109,3 +115,82 @@ bool HashSet::exists(const char *sz) {
   return exists(sz, strlen(sz) + 1);
 }
 
+
+uint32_t HashSet::serializeBuckets(char *buffer) {
+  uint32_t totalSize = 0;
+  char sz[512];
+  totalSize += 1 + sprintf(sz, "%x", bucketCount);
+  if (buffer) {
+    memcpy(buffer, sz, totalSize);
+  }
+  for (uint32_t i = 0; i < bucketCount; i++) {
+    HashItem *hashItem = buckets[i];
+    while (hashItem) {
+      uint32_t dataLenSize = 1 + sprintf(sz, "%x", hashItem->dataLen);
+      if (buffer) {
+        memcpy(buffer + totalSize, sz, dataLenSize);
+      }
+      totalSize += dataLenSize;
+      if (buffer) {
+        memcpy(buffer + totalSize, hashItem->data, hashItem->dataLen);
+      }
+      totalSize += hashItem->dataLen;
+      hashItem = hashItem->next;
+    }
+    if (buffer) {
+      buffer[totalSize] = '\0';
+    }
+    // Second null terminator to show next bucket
+    totalSize++;
+  }
+  return totalSize;
+}
+
+/**
+ * Serializes a the parsed data and bloom filter data into a single buffer.
+ * @param size The size is returned in the out parameter if it's needed to write to a file.
+ * @return The returned buffer should be deleted by the caller.
+ */
+char * HashSet::serialize(int &size) {
+  size = 0;
+  size += serializeBuckets(nullptr);
+  char *buffer = new char[size];
+  memset(buffer, 0, size);
+  serializeBuckets(buffer);
+  return buffer;
+}
+
+/**
+ * Deserializes the buffer, a size is not needed since a serialized buffer is self described
+ * Memory passed in will be used by this instance directly without copying it in.
+ */
+void HashSet::deserialize(char *buffer) {
+  cleanup();
+  uint32_t pos = 0;
+  sscanf(buffer + pos, "%x", &bucketCount);
+  buckets = new HashItem *[bucketCount];
+  memset(buckets, 0, sizeof(HashItem*) * bucketCount);
+  pos += strlen(buffer + pos) + 1;
+  for (uint32_t i = 0; i < bucketCount; i++) {
+    HashItem *lastHashItem = nullptr;
+    while (*(buffer + pos) != '\0') {
+      uint32_t dataLen = 0;
+      sscanf(buffer + pos, "%x", &dataLen);
+      pos += strlen(buffer + pos) + 1;
+      HashItem *hashItem = new HashItem();
+      _size++;
+      hashItem->dataLen = dataLen;
+      hashItem->data = buffer + pos;
+      hashItem->borrowedMemory = true;
+      memcpy(hashItem->data, buffer + pos, dataLen);
+      pos += dataLen;
+      if (lastHashItem) {
+        lastHashItem->next = hashItem;
+      } else {
+        buckets[i] = hashItem;
+      }
+      lastHashItem = hashItem;
+    }
+    pos++;
+  }
+}

@@ -41,4 +41,25 @@ TEST(hashSet, test1)
     CHECK(hashSet.exists("a\0b\0\0c", 6));
     CHECK(!hashSet.exists("a\0b\0\0c", 7));
   }
+
+  int len = 0;
+  for (unsigned int i = 0; i < sizeof(hashSets) / sizeof(hashSets[0]); i++) {
+    HashSet &hs1 = hashSets[i];
+    char *buffer = hs1.serialize(len);
+    HashSet hs2;
+    hs2.deserialize(buffer);
+    CHECK(hs2.exists("test"));
+    CHECK(hs2.exists("test2"));
+    CHECK(hs2.exists("test3"));
+    CHECK(hs2.exists("test4"));
+    CHECK(!hs2.exists("tes"));
+    CHECK(!hs2.exists("test22"));
+    CHECK(!hs2.exists("test5"));
+    CHECK(!hs2.exists("a"));
+    CHECK(!hs2.exists("a", 1));
+    CHECK(hs2.exists("a\0b\0\0c", 6));
+    CHECK(!hs2.exists("a\0b\0\0c", 7));
+    CHECK(hs2.size() == 5);
+    delete[] buffer;
+  }
 }
