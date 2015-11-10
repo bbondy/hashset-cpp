@@ -35,7 +35,6 @@ public:
   // Memory passed in will be used by this instance directly without copying it in.
   void deserialize(char *);
 
-
 private:
   void cleanup();
   uint32_t serializeBuckets(char *buffer);
