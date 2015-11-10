@@ -10,6 +10,11 @@ HashSet::HashSet(uint32_t bucketCount, HashFn hashFn)
   memset(buckets, 0, sizeof(HashItem*) * bucketCount);
 }
 
+HashSet::HashSet(char *buffer, HashFn hashFn)
+  : bucketCount(0), hashFn(hashFn), buckets(nullptr), _size(0) {
+  deserialize(buffer);
+}
+
 HashSet::~HashSet() {
   cleanup();
 }

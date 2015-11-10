@@ -14,6 +14,8 @@ extern HashFn defaultHashSetFn;
 class HashSet {
 public:
   HashSet(uint32_t bucketCount = 256, HashFn hashFn = defaultHashSetFn);
+  HashSet(char *buffer, HashFn hashFn = defaultHashSetFn);
+
   ~HashSet();
 
   bool add(const char *data, uint32_t len);

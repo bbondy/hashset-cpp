@@ -48,18 +48,23 @@ TEST(hashSet, test1)
     char *buffer = hs1.serialize(len);
     HashSet hs2;
     hs2.deserialize(buffer);
-    CHECK(hs2.exists("test"));
-    CHECK(hs2.exists("test2"));
-    CHECK(hs2.exists("test3"));
-    CHECK(hs2.exists("test4"));
-    CHECK(!hs2.exists("tes"));
-    CHECK(!hs2.exists("test22"));
-    CHECK(!hs2.exists("test5"));
-    CHECK(!hs2.exists("a"));
-    CHECK(!hs2.exists("a", 1));
-    CHECK(hs2.exists("a\0b\0\0c", 6));
-    CHECK(!hs2.exists("a\0b\0\0c", 7));
-    CHECK(hs2.size() == 5);
+    HashSet hs3(buffer);
+    HashSet *deserializedHashSets[2] = {&hs2, &hs3};
+    for (unsigned int i = 0; i < sizeof(deserializedHashSets) / sizeof(deserializedHashSets[0]); i++) {
+      HashSet &dhs = *deserializedHashSets[i];
+      CHECK(dhs.exists("test"));
+      CHECK(dhs.exists("test2"));
+      CHECK(dhs.exists("test3"));
+      CHECK(dhs.exists("test4"));
+      CHECK(!dhs.exists("tes"));
+      CHECK(!dhs.exists("test22"));
+      CHECK(!dhs.exists("test5"));
+      CHECK(!dhs.exists("a"));
+      CHECK(!dhs.exists("a", 1));
+      CHECK(dhs.exists("a\0b\0\0c", 6));
+      CHECK(!dhs.exists("a\0b\0\0c", 7));
+      CHECK(dhs.size() == 5);
+    }
     delete[] buffer;
   }
 }

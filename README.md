@@ -25,6 +25,13 @@ int main(int argc, char **argv) {
   cout << "test exists: " << (set.exists("test") ? "true" : "false") << endl;
   // Prints false
   cout << "test2 exists: " << (set.exists("test2") ? "true" : "false") << endl;
+
+  int len;
+  HashSet set2(set.serialize(len));
+  // Prints true
+  cout << "test exists: " << (set2.exists("test") ? "true" : "false") << endl;
+  // Prints false
+  cout << "test2 exists: " << (set2.exists("test2") ? "true" : "false") << endl;
   return 0;
 }
 ```
