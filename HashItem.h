@@ -1,16 +1,15 @@
+template<class T>
 class HashItem {
 public:
-  HashItem() : next(nullptr), data(nullptr), dataLen(0), borrowedMemory(false) {
+  HashItem() : next(nullptr), hashItemStorage(nullptr) {
   }
 
   ~HashItem() {
-    if (!borrowedMemory && data) {
-      delete[] data;
+    if (hashItemStorage) {
+      delete hashItemStorage;
     }
   }
 
   HashItem *next;
-  char *data;
-  uint32_t dataLen;
-  bool borrowedMemory;
+  T *hashItemStorage;
 };

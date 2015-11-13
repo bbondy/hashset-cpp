@@ -31,6 +31,7 @@
       "main.cpp",
       "HashSet.cpp",
       "HashSet.h",
+      "./test/exampleData.h"
     ],
     "include_dirs": [
       ".",
@@ -55,6 +56,7 @@
     "sources": [
       "./test/test-main.cpp",
       "./test/hashset-test.cpp",
+      "./test/exampleData.h",
       "HashSet.cpp",
       "HashSet.h",
     ],
