@@ -6,7 +6,7 @@ public:
   uint64_t hash() const {
     uint64_t total = 0;
     int prime = 19;
-    for (int i = 0; i < dataLen; i++) {
+    for (uint32_t i = 0; i < dataLen; i++) {
       total += data[i] * pow(prime, dataLen - i - 1);
     }
     return total;
@@ -22,6 +22,7 @@ public:
     this->data = new char[dataLen];
     memcpy(this->data, data, dataLen);
     borrowedMemory = false;
+    extraData = 0;
   }
 
   ExampleData(const char *data, int dataLen) {
@@ -29,6 +30,7 @@ public:
     this->data = new char[dataLen];
     memcpy(this->data, data, dataLen);
     borrowedMemory = false;
+    extraData = 0;
   }
 
   ExampleData(const ExampleData &rhs) {
@@ -36,9 +38,10 @@ public:
     data = new char[dataLen];
     memcpy(data, rhs.data, dataLen);
     borrowedMemory = rhs.borrowedMemory;
+    extraData = rhs.extraData;
   }
 
-  ExampleData() : data(nullptr), dataLen(0), borrowedMemory(false) {
+  ExampleData() : extraData(0), data(nullptr), dataLen(0), borrowedMemory(false) {
   }
 
   bool operator==(const ExampleData &rhs) const {
@@ -65,6 +68,12 @@ public:
       memcpy(buffer + totalSize, data, dataLen);
     }
     totalSize += dataLen;
+
+    if (buffer) {
+      buffer[totalSize] = extraData;
+    }
+    totalSize++;
+
     return totalSize;
   }
 
@@ -82,8 +91,17 @@ public:
     borrowedMemory = true;
     memcpy(data, buffer + consumed, dataLen);
     consumed += dataLen;
+
+    extraData = buffer[consumed];
+    consumed++;
+
     return consumed;
   }
+
+  // Just an example which is not used in comparisons but
+  // is used for serializing / deserializing, showing the
+  // need for find vs exists.
+  char extraData;
 
 private:
   bool hasNewlineBefore(char *buffer, uint32_t bufferSize) {

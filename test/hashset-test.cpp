@@ -49,6 +49,17 @@ TEST(hashSet, test1)
     CHECK(!hashSet.exists(ExampleData("a", 1)));
     CHECK(hashSet.exists(ExampleData("a\0b\0\0c", 6)));
     CHECK(!hashSet.exists(ExampleData("a\0b\0\0c", 7)));
+
+    // Try to find something that doesn't exist
+    CHECK(hashSet.find(ExampleData("fdsafasd")) == nullptr);
+
+    // Show how extra data works
+    ExampleData item("ok");
+    item.extraData = 'b';
+    hashSet.add(item);
+
+    ExampleData *p = hashSet.find(ExampleData("ok"));
+    CHECK(p->extraData == 'b');
   }
 
   uint32_t len = 0;
@@ -70,7 +81,7 @@ TEST(hashSet, test1)
     CHECK(!dhs.exists(ExampleData("a", 1)));
     CHECK(dhs.exists(ExampleData("a\0b\0\0c", 6)));
     CHECK(!dhs.exists(ExampleData("a\0b\0\0c", 7)));
-    CHECK(dhs.size() == 5);
+    CHECK(dhs.size() == 6);
     delete[] buffer;
   }
 }

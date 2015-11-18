@@ -85,6 +85,32 @@ public:
     return false;
   }
 
+  /**
+   * Finds the specific data in the hash set.
+   * This is useful because sometimes it contains more context
+   * than the object used for the lookup.
+   * @param data The binary data to check
+   * @param len The length of the binary data to acheck
+   * @return The data stored in the hash set or nullptr if none is found.
+   */
+  T * find(const T &dataToCheck) {
+    uint64_t hash = dataToCheck.hash();
+    HashItem<T> *hashItem = buckets[hash % bucketCount];
+    if (!hashItem) {
+      return nullptr;
+    }
+
+    while (hashItem) {
+      if (*hashItem->hashItemStorage == dataToCheck) {
+        return hashItem->hashItemStorage;
+      }
+      hashItem = hashItem->next;
+    }
+
+    return nullptr;
+  }
+
+
   uint32_t size() {
     return _size;
   }
