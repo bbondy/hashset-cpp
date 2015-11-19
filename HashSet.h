@@ -6,7 +6,7 @@
 
 #include <stdint.h>
 #include <math.h>
-#include "hashItem.h"
+#include "HashItem.h"
 #include <string.h>
 #include <stdio.h>
 
