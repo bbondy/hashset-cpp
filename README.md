@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/bbondy/hashset-cpp.svg?branch=master)](https://travis-ci.org/bbondy/hashset-cpp)
+
 #hashset-cpp
 
 Implements a simple HashSet for strings in environments where you don't have the std lib available.
