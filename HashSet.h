@@ -228,6 +228,7 @@ private:
     return totalSize;
   }
 
+protected:
   uint32_t bucketCount;
   HashItem<T> **buckets;
   uint32_t _size;
