@@ -59,17 +59,24 @@ TEST(hashSet, test1)
     CHECK(!hashSet.remove(ExampleData("test2")));
     CHECK(hashSet.size() == 4);
     CHECK(hashSet.add(ExampleData("test2")));
+    CHECK(hashSet.size() == 5);
 
     // Try to find something that doesn't exist
     CHECK(hashSet.find(ExampleData("fdsafasd")) == nullptr);
 
     // Show how extra data works
     ExampleData item("ok");
-    item.extraData = 'b';
+    item.extraData = 1;
     hashSet.add(item);
 
     ExampleData *p = hashSet.find(ExampleData("ok"));
-    CHECK(p->extraData == 'b');
+    CHECK(p->extraData == 1);
+
+    item.extraData = 2;
+    hashSet.add(item);
+    CHECK(hashSet.size() == 6);
+    // ExampleData is configuredd to merge extraData on updates
+    CHECK(p->extraData == 3);
   }
 
   uint32_t len = 0;

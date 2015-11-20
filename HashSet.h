@@ -34,7 +34,7 @@ public:
    * @param newHashItem The node to add
    * @return true if the data was added
    */
-  bool add(const T &itemToAdd) {
+  bool add(const T &itemToAdd, bool updateIfExists = true) {
     uint64_t hash = itemToAdd.hash();
     HashItem<T> *hashItem = buckets[hash % bucketCount];
     if (!hashItem) {
@@ -47,6 +47,9 @@ public:
 
     while (true) {
       if (*hashItem->hashItemStorage == itemToAdd) {
+        if (updateIfExists) {
+          hashItem->hashItemStorage->update(itemToAdd);
+        }
         return false;
       }
       if (!hashItem->next) {
@@ -110,8 +113,8 @@ public:
 
   /**
    * Removes the specific data in the hash set.
-   * @param data The data to remove
-   * @return The true if an item matching the data was removed
+   * @param dataToCheck The data to remove
+   * @return true if an item matching the data was removed
    */
   bool remove(const T &dataToCheck) {
     uint64_t hash = dataToCheck.hash();

@@ -56,6 +56,10 @@ public:
     return !(*this == rhs);
   }
 
+  void update(const ExampleData &other) {
+    extraData = extraData | other.extraData;
+  }
+
   uint32_t serialize(char *buffer) {
     uint32_t totalSize = 0;
     char sz[32];
