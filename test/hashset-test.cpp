@@ -50,6 +50,16 @@ TEST(hashSet, test1)
     CHECK(hashSet.exists(ExampleData("a\0b\0\0c", 6)));
     CHECK(!hashSet.exists(ExampleData("a\0b\0\0c", 7)));
 
+    // Test that remove works
+    CHECK(hashSet.size() == 5);
+    CHECK(hashSet.exists(ExampleData("test2")));
+    CHECK(hashSet.remove(ExampleData("test2")));
+    CHECK(hashSet.size() == 4);
+    CHECK(!hashSet.exists(ExampleData("test2")));
+    CHECK(!hashSet.remove(ExampleData("test2")));
+    CHECK(hashSet.size() == 4);
+    CHECK(hashSet.add(ExampleData("test2")));
+
     // Try to find something that doesn't exist
     CHECK(hashSet.find(ExampleData("fdsafasd")) == nullptr);
 

@@ -64,8 +64,7 @@ public:
 
   /**
    * Determines if the specified data exists in the set or not`
-   * @param data The binary data to check
-   * @param len The length of the binary data to acheck
+   * @param dataToCheck The data to check
    * @return true if the data found
    */
   bool exists(const T &dataToCheck) {
@@ -89,8 +88,7 @@ public:
    * Finds the specific data in the hash set.
    * This is useful because sometimes it contains more context
    * than the object used for the lookup.
-   * @param data The binary data to check
-   * @param len The length of the binary data to acheck
+   * @param dataToCheck The data to check
    * @return The data stored in the hash set or nullptr if none is found.
    */
   T * find(const T &dataToCheck) {
@@ -108,6 +106,39 @@ public:
     }
 
     return nullptr;
+  }
+
+  /**
+   * Removes the specific data in the hash set.
+   * @param data The data to remove
+   * @return The true if an item matching the data was removed
+   */
+  bool remove(const T &dataToCheck) {
+    uint64_t hash = dataToCheck.hash();
+    HashItem<T> *hashItem = buckets[hash % bucketCount];
+    if (!hashItem) {
+      return false;
+    }
+
+    HashItem<T> *lastItem = nullptr;
+    while (hashItem) {
+      if (*hashItem->hashItemStorage == dataToCheck) {
+        if (lastItem) {
+          lastItem->next = hashItem->next;
+          delete hashItem;
+        } else {
+          buckets[hash % bucketCount] = hashItem->next;
+          delete hashItem;
+        }
+        _size--;
+        return true;
+      }
+
+      lastItem = hashItem;
+      hashItem = hashItem->next;
+    }
+
+    return false;
   }
 
 
