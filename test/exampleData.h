@@ -7,7 +7,7 @@ public:
     uint64_t total = 0;
     int prime = 19;
     for (uint32_t i = 0; i < dataLen; i++) {
-      total += data[i] * pow(prime, dataLen - i - 1);
+      total += data[i] * static_cast<uint64_t>(pow(prime, dataLen - i - 1));
     }
     return total;
   }
@@ -18,7 +18,7 @@ public:
     }
   }
   ExampleData(const char *data) {
-    dataLen = strlen(data) + 1;
+    dataLen = static_cast<uint32_t>(strlen(data)) + 1;
     this->data = new char[dataLen];
     memcpy(this->data, data, dataLen);
     borrowedMemory = false;
@@ -87,7 +87,7 @@ public:
       return 0;
     }
     sscanf(buffer, "%x", &dataLen);
-    uint32_t consumed = strlen(buffer) + 1;
+    uint32_t consumed = static_cast<uint32_t>(strlen(buffer)) + 1;
     if (consumed + dataLen >= bufferSize) {
       return 0;
     }

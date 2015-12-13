@@ -176,7 +176,7 @@ public:
     sscanf(buffer + pos, "%x", &bucketCount);
     buckets = new HashItem<T> *[bucketCount];
     memset(buckets, 0, sizeof(HashItem<T>*) * bucketCount);
-    pos += strlen(buffer + pos) + 1;
+    pos += static_cast<uint32_t>(strlen(buffer + pos)) + 1;
     if (pos >= bufferSize) {
       return false;
     }
