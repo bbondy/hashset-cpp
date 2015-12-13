@@ -12,6 +12,7 @@
   },
   "devDependencies": {},
   "scripts": {
+    "build": "make",
     "test": "make test",
     "preinstall": "npm install nan && npm install cppunitlite",
     "install": "node-gyp rebuild"
