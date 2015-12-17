@@ -13,9 +13,10 @@
 
 #include <stdint.h>
 #include <math.h>
-#include "HashItem.h"
 #include <string.h>
 #include <stdio.h>
+#include "./base.h"
+#include "./HashItem.h"
 
 template<class T>
 class HashSet {
