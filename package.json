@@ -1,7 +1,7 @@
 {
   "name": "hashset-cpp",
   "main": "include.js",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "",
   "directories": {
     "test": "test"
