@@ -1,36 +1,39 @@
-#include "CppUnitLite/TestHarness.h"
-#include "CppUnitLite/Test.h"
-#include "HashSet.h"
-#include "exampleData.h"
+/* Copyright (c) 2015 Brian R. Bondy. Distributed under the MPL2 license.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
 #include <iostream>
+#include "./CppUnitLite/TestHarness.h"
+#include "./CppUnitLite/Test.h"
+#include "./HashSet.h"
+#include "./exampleData.h"
 
-using namespace std;
-
-TEST(hashSet, test1)
-{
+TEST(hashSet, test1) {
   {
     HashSet<ExampleData> hashSet(2);
     hashSet.add(ExampleData("test"));
     uint32_t len;
-    char *buffer = hashSet.serialize(len);
+    char *buffer = hashSet.serialize(&len);
     HashSet<ExampleData> hashSet2(0);
     hashSet2.deserialize(buffer, len);
-    hashSet2.exists("test");
+    hashSet2.exists(ExampleData("test"));
   }
 
-  HashSet<ExampleData> hashSets[] = {HashSet<ExampleData>(1), HashSet<ExampleData>(2), HashSet<ExampleData>(500)};
+  HashSet<ExampleData> hashSets[] = {HashSet<ExampleData>(1),
+    HashSet<ExampleData>(2), HashSet<ExampleData>(500)};
   for (unsigned int i = 0; i < sizeof(hashSets) / sizeof(hashSets[0]); i++) {
     HashSet<ExampleData> &hashSet = hashSets[i];
-    CHECK(hashSet.size() == 0);
+    LONGS_EQUAL(0, hashSet.size());
     hashSet.add(ExampleData("test"));
-    CHECK(hashSet.size() == 1);
+    LONGS_EQUAL(1, hashSet.size());
     CHECK(hashSet.exists(ExampleData("test")));
     hashSet.add(ExampleData("test"));
     CHECK(hashSet.exists(ExampleData("test")));
-    CHECK(hashSet.size() == 1);
+    LONGS_EQUAL(1, hashSet.size());
     hashSet.add(ExampleData("test2"));
     CHECK(hashSet.exists(ExampleData("test2")));
-    CHECK(hashSet.size() == 2);
+    LONGS_EQUAL(2, hashSet.size());
     hashSet.add(ExampleData("test3"));
     CHECK(hashSet.exists(ExampleData("test3")));
     hashSet.add(ExampleData("test4"));
@@ -42,24 +45,24 @@ TEST(hashSet, test1)
     CHECK(!hashSet.exists(ExampleData("test22")));
     CHECK(!hashSet.exists(ExampleData("test5")));
 
-    CHECK(hashSet.size() == 4);
+    LONGS_EQUAL(4, hashSet.size());
     hashSet.add(ExampleData("a\0b\0\0c", 6));
-    CHECK(hashSet.size() == 5);
-    CHECK(!hashSet.exists("a"));
+    LONGS_EQUAL(5, hashSet.size());
+    CHECK(!hashSet.exists(ExampleData("a")));
     CHECK(!hashSet.exists(ExampleData("a", 1)));
     CHECK(hashSet.exists(ExampleData("a\0b\0\0c", 6)));
     CHECK(!hashSet.exists(ExampleData("a\0b\0\0c", 7)));
 
     // Test that remove works
-    CHECK(hashSet.size() == 5);
+    LONGS_EQUAL(5, hashSet.size());
     CHECK(hashSet.exists(ExampleData("test2")));
     CHECK(hashSet.remove(ExampleData("test2")));
-    CHECK(hashSet.size() == 4);
+    LONGS_EQUAL(4, hashSet.size());
     CHECK(!hashSet.exists(ExampleData("test2")));
     CHECK(!hashSet.remove(ExampleData("test2")));
-    CHECK(hashSet.size() == 4);
+    LONGS_EQUAL(4, hashSet.size());
     CHECK(hashSet.add(ExampleData("test2")));
-    CHECK(hashSet.size() == 5);
+    LONGS_EQUAL(5, hashSet.size());
 
     // Try to find something that doesn't exist
     CHECK(hashSet.find(ExampleData("fdsafasd")) == nullptr);
@@ -70,35 +73,35 @@ TEST(hashSet, test1)
     hashSet.add(item);
 
     ExampleData *p = hashSet.find(ExampleData("ok"));
-    CHECK(p->extraData == 1);
+    LONGS_EQUAL(1, p->extraData);
 
     item.extraData = 2;
     hashSet.add(item);
-    CHECK(hashSet.size() == 6);
+    LONGS_EQUAL(6, hashSet.size());
     // ExampleData is configuredd to merge extraData on updates
-    CHECK(p->extraData == 3);
+    LONGS_EQUAL(3, p->extraData);
   }
 
   uint32_t len = 0;
   for (unsigned int i = 0; i < sizeof(hashSets) / sizeof(hashSets[0]); i++) {
     HashSet<ExampleData> &hs1 = hashSets[i];
-    char *buffer = hs1.serialize(len);
+    char *buffer = hs1.serialize(&len);
     HashSet<ExampleData> dhs(0);
     // Deserializing some invalid data should fail
     CHECK(!dhs.deserialize(const_cast<char*>("31131"), 2));
     CHECK(dhs.deserialize(buffer, len));
-    CHECK(dhs.exists("test"));
-    CHECK(dhs.exists("test2"));
-    CHECK(dhs.exists("test3"));
-    CHECK(dhs.exists("test4"));
-    CHECK(!dhs.exists("tes"));
-    CHECK(!dhs.exists("test22"));
-    CHECK(!dhs.exists("test5"));
-    CHECK(!dhs.exists("a"));
+    CHECK(dhs.exists(ExampleData("test")));
+    CHECK(dhs.exists(ExampleData("test2")));
+    CHECK(dhs.exists(ExampleData("test3")));
+    CHECK(dhs.exists(ExampleData("test4")));
+    CHECK(!dhs.exists(ExampleData("tes")));
+    CHECK(!dhs.exists(ExampleData("test22")));
+    CHECK(!dhs.exists(ExampleData("test5")));
+    CHECK(!dhs.exists(ExampleData("a")));
     CHECK(!dhs.exists(ExampleData("a", 1)));
     CHECK(dhs.exists(ExampleData("a\0b\0\0c", 6)));
     CHECK(!dhs.exists(ExampleData("a\0b\0\0c", 7)));
-    CHECK(dhs.size() == 6);
+    LONGS_EQUAL(6, dhs.size());
     delete[] buffer;
   }
 }

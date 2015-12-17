@@ -1,8 +1,15 @@
+/* Copyright (c) 2015 Brian R. Bondy. Distributed under the MPL2 license.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
 // You should probably not be using this.  This is only useful in environments
 // without std lib and having specific serialization and memory requirements.
-// Instead consider using `hash_set` which is a more generic implementation with templates.
+// Instead consider using `hash_set` which is a more generic implementation
+// with templates.
 
-#pragma once
+#ifndef HASHSET_H_
+#define HASHSET_H_
 
 #include <stdint.h>
 #include <math.h>
@@ -12,10 +19,10 @@
 
 template<class T>
 class HashSet {
-public:
+ public:
   typedef uint64_t (*HashSetFnPtr)(const T *hashItem);
 
-  HashSet(uint32_t bucketCount)
+  explicit HashSet(uint32_t bucketCount)
     : bucketCount(bucketCount), buckets(nullptr), _size(0) {
     if (bucketCount != 0) {
       buckets = new HashItem<T>*[bucketCount];
@@ -29,7 +36,8 @@ public:
 
   /**
    * Adds the specified data if it doesn't exist
-   * A copy of the data will be created, so the memory used to do the add doesn't need to stick around.
+   * A copy of the data will be created, so the memory used to do the add
+   * doesn't need to stick around.
    *
    * @param newHashItem The node to add
    * @return true if the data was added
@@ -151,21 +159,23 @@ public:
 
   /**
    * Serializes the parsed data and bloom filter data into a single buffer.
-   * @param size The size is returned in the out parameter if it's needed to write to a file.
+   * @param size The size is returned in the out parameter if it's needed to
+   * write to a file.
    * @return The returned buffer should be deleted by the caller.
    */
-  char * serialize(uint32_t &size) {
-     size = 0;
-     size += serializeBuckets(nullptr);
-     char *buffer = new char[size];
-     memset(buffer, 0, size);
+  char * serialize(uint32_t *size) {
+     *size = 0;
+     *size += serializeBuckets(nullptr);
+     char *buffer = new char[*size];
+     memset(buffer, 0, *size);
      serializeBuckets(buffer);
      return buffer;
   }
 
   /**
    * Deserializes the buffer.
-   * Memory passed in will be used by this instance directly without copying it in.
+   * Memory passed in will be used by this instance directly without copying
+   * it in.
    */
   bool deserialize(char *buffer, uint32_t bufferSize) {
     cleanup();
@@ -189,7 +199,9 @@ public:
 
         HashItem<T> *hashItem = new HashItem<T>();
         hashItem->hashItemStorage = new T();
-        uint32_t deserializeSize = hashItem->hashItemStorage->deserialize(buffer + pos, bufferSize - pos);
+        uint32_t deserializeSize =
+          hashItem->hashItemStorage->deserialize(buffer + pos,
+              bufferSize - pos);
         pos += deserializeSize;
         if (pos >= bufferSize || deserializeSize == 0) {
           return false;
@@ -209,7 +221,7 @@ public:
     return true;
   }
 
-private:
+ private:
   bool hasNewlineBefore(char *buffer, uint32_t bufferSize) {
     char *p = buffer;
     for (uint32_t i = 0; i < bufferSize; ++i) {
@@ -239,7 +251,7 @@ private:
   uint32_t serializeBuckets(char *buffer) {
     uint32_t totalSize = 0;
     char sz[512];
-    totalSize += 1 + sprintf(sz, "%x", bucketCount);
+    totalSize += 1 + snprintf(sz, sizeof(sz), "%x", bucketCount);
     if (buffer) {
       memcpy(buffer, sz, totalSize);
     }
@@ -247,7 +259,8 @@ private:
       HashItem<T> *hashItem = buckets[i];
       while (hashItem) {
         if (buffer) {
-          totalSize += hashItem->hashItemStorage->serialize(buffer + totalSize);
+          totalSize +=
+            hashItem->hashItemStorage->serialize(buffer + totalSize);
         } else {
           totalSize += hashItem->hashItemStorage->serialize(nullptr);
         }
@@ -262,8 +275,10 @@ private:
     return totalSize;
   }
 
-protected:
+ protected:
   uint32_t bucketCount;
   HashItem<T> **buckets;
   uint32_t _size;
 };
+
+#endif  // HASHSET_H_

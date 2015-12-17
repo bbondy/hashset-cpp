@@ -1,8 +1,16 @@
-#include "math.h"
+/* Copyright (c) 2015 Brian R. Bondy. Distributed under the MPL2 license.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+#ifndef TEST_EXAMPLEDATA_H_
+#define TEST_EXAMPLEDATA_H_
+
+#include <math.h>
 #include <string.h>
 
 class ExampleData {
-public:
+ public:
   uint64_t hash() const {
     uint64_t total = 0;
     int prime = 19;
@@ -17,7 +25,7 @@ public:
       delete[] data;
     }
   }
-  ExampleData(const char *data) {
+  explicit ExampleData(const char *data) {
     dataLen = static_cast<uint32_t>(strlen(data)) + 1;
     this->data = new char[dataLen];
     memcpy(this->data, data, dataLen);
@@ -41,7 +49,8 @@ public:
     extraData = rhs.extraData;
   }
 
-  ExampleData() : extraData(0), data(nullptr), dataLen(0), borrowedMemory(false) {
+  ExampleData() : extraData(0), data(nullptr), dataLen(0),
+    borrowedMemory(false) {
   }
 
   bool operator==(const ExampleData &rhs) const {
@@ -63,7 +72,7 @@ public:
   uint32_t serialize(char *buffer) {
     uint32_t totalSize = 0;
     char sz[32];
-    uint32_t dataLenSize = 1 + sprintf(sz, "%x", dataLen);
+    uint32_t dataLenSize = 1 + snprintf(sz, sizeof(sz), "%x", dataLen);
     if (buffer) {
       memcpy(buffer + totalSize, sz, dataLenSize);
     }
@@ -107,7 +116,7 @@ public:
   // need for find vs exists.
   char extraData;
 
-private:
+ private:
   bool hasNewlineBefore(char *buffer, uint32_t bufferSize) {
     char *p = buffer;
     for (uint32_t i = 0; i < bufferSize; ++i) {
@@ -123,3 +132,4 @@ private:
   bool borrowedMemory;
 };
 
+#endif  // TEST_EXAMPLEDATA_H_
