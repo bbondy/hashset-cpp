@@ -10,10 +10,13 @@
     "cppunitlite": "^1.0.0",
     "nan": "^2.1.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "pre-commit": "^1.1.2"
+  },
   "scripts": {
     "build": "make",
     "test": "make test",
+    "lint": "./scripts/cpplint.py",
     "preinstall": "npm install nan && npm install cppunitlite",
     "install": "node-gyp rebuild"
   },
@@ -27,5 +30,8 @@
   "bugs": {
     "url": "https://github.com/bbondy/hashset-cpp/issues"
   },
-  "homepage": "https://github.com/bbondy/hashset-cpp#readme"
+  "homepage": "https://github.com/bbondy/hashset-cpp#readme",
+  "pre-commit": [
+    "lint"
+  ]
 }
