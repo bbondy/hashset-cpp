@@ -77,3 +77,8 @@ make test
 ```
 make clean
 ```
+
+## Linting
+```
+npm run lint
+```
