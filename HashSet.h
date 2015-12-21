@@ -41,6 +41,8 @@ class HashSet {
    * doesn't need to stick around.
    *
    * @param newHashItem The node to add
+   * @param updateIfExists true if the item should be updated if it is already there
+   *   false if the add should fail if it is alraedy there.
    * @return true if the data was added
    */
   bool add(const T &itemToAdd, bool updateIfExists = true) {
@@ -154,6 +156,9 @@ class HashSet {
   }
 
 
+  /**
+   * Obtains the number of items in the Hash Set
+   */
   uint32_t size() {
     return _size;
   }
@@ -177,6 +182,9 @@ class HashSet {
    * Deserializes the buffer.
    * Memory passed in will be used by this instance directly without copying
    * it in.
+   * @param buffer The serialized data to deserialize
+   * @param bufferSize the size of the buffer to deserialize
+   * @return true if the operation was successful
    */
   bool deserialize(char *buffer, uint32_t bufferSize) {
     cleanup();
