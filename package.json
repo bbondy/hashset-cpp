@@ -1,7 +1,7 @@
 {
   "name": "hashset-cpp",
   "main": "./build/Release/hashset-cpp",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "",
   "directories": {
     "test": "test"

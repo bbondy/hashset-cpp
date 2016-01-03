@@ -3,13 +3,13 @@
     "target_name": "sample",
     "type": "executable",
     "sources": [
-      "main.cpp",
-      "HashSet.cpp",
-      "HashSet.h",
-      "./test/exampleData.h"
+      "../main.cpp",
+      "../HashSet.cpp",
+      "../HashSet.h",
+      "../test/exampleData.h"
     ],
     "include_dirs": [
-      ".",
+      "..",
     ],
     "conditions": [
       ['OS=="win"', {
@@ -29,19 +29,19 @@
     "target_name": "test",
     "type": "executable",
     "sources": [
-      "./test/test-main.cpp",
-      "./test/hashset-test.cpp",
-      "./test/exampleData.h",
-      "HashSet.cpp",
-      "HashSet.h",
+      "../test/test-main.cpp",
+      "../test/hashset-test.cpp",
+      "../test/exampleData.h",
+      "../HashSet.cpp",
+      "../HashSet.h",
     ],
     "include_dirs": [
-      ".",
-      './node_modules/cppunitlite',
-      './node_modules/nan'
+      "..",
+      '../node_modules/cppunitlite',
+      '../node_modules/nan'
     ],
     "dependencies": [
-      "node_modules/cppunitlite/binding.gyp:CppUnitLite",
+      "../node_modules/cppunitlite/binding.gyp:CppUnitLite",
     ],
     "conditions": [
       ['OS=="win"', {
