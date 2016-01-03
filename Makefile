@@ -19,7 +19,7 @@ sample: build-other
 	./build/out/Default/sample
 
 xcode-proj:
-	./node_modules/node-gyp/gyp/gyp_main.py --generator-output=./build --depth=. -f xcode other.gyp
+	./node_modules/node-gyp/gyp/gyp_main.py --generator-output=./build --depth=. -f xcode other/binding.gyp
 
 clean:
 	rm -Rf build
