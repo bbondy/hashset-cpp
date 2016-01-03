@@ -1,21 +1,21 @@
 {
   "name": "hashset-cpp",
   "main": "./build/Release/hashset-cpp",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "",
   "directories": {
     "test": "test"
   },
   "dependencies": {
-    "node-gyp": "^3.2.1"
   },
   "devDependencies": {
+    "node-gyp": "^3.2.1",
     "pre-commit": "^1.1.2",
+    "nan": "^2.1.0",
     "cppunitlite": "^1.0.0",
     "nan": "^2.1.0"
   },
   "scripts": {
-    "build": "make",
     "test": "make test",
     "lint": "./scripts/cpplint.py",
     "preinstall": "npm install nan && npm install cppunitlite"
