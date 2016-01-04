@@ -15,7 +15,9 @@ class ExampleData {
     uint64_t total = 0;
     int prime = 19;
     for (uint32_t i = 0; i < dataLen; i++) {
-      total += data[i] * static_cast<uint64_t>(pow(prime, dataLen - i - 1));
+      total += data[i] *
+        static_cast<uint64_t>(pow(static_cast<long double>(prime),
+              static_cast<int>(dataLen - i - 1)));
     }
     return total;
   }

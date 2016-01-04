@@ -1,7 +1,7 @@
 {
   "name": "hashset-cpp",
   "main": "./build/Release/hashset-cpp",
-  "version": "1.0.8",
+  "version": "1.0.11",
   "description": "",
   "directories": {
     "test": "test"
@@ -18,8 +18,7 @@
   "scripts": {
     "install": "node-gyp rebuild",
     "test": "make test",
-    "lint": "./scripts/cpplint.py",
-    "preinstall": "npm install nan && npm install cppunitlite"
+    "lint": "./scripts/cpplint.py"
   },
   "repository": {
     "type": "git",
