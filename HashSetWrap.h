@@ -10,7 +10,7 @@
 #include <node_object_wrap.h>
 
 #include "HashSet.h"
-#include "test/ExampleData.h"
+#include "test/exampleData.h"
 
 namespace HashSetWrap {
 
