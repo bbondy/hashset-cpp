@@ -8,18 +8,14 @@
 
 #include <math.h>
 #include <string.h>
+#include "hashFn.h"
+
+static HashFn h(19);
 
 class ExampleData {
  public:
   uint64_t hash() const {
-    uint64_t total = 0;
-    int prime = 19;
-    for (uint32_t i = 0; i < dataLen; i++) {
-      total += data[i] *
-        static_cast<uint64_t>(pow(static_cast<long double>(prime),
-              static_cast<int>(dataLen - i - 1)));
-    }
-    return total;
+    return h(data, dataLen);
   }
 
   ~ExampleData() {
