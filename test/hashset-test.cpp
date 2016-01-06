@@ -8,6 +8,7 @@
 #include "./CppUnitLite/Test.h"
 #include "./HashSet.h"
 #include "./exampleData.h"
+#include "./hashFn.h"
 
 TEST(hashSet, test1) {
   {
@@ -104,4 +105,9 @@ TEST(hashSet, test1) {
     LONGS_EQUAL(6, dhs.size());
     delete[] buffer;
   }
+
+  // Make sure HashFn produces the correct hash
+  HashFn h(19);
+  const char *sz = "facebook.com";
+  LONGS_EQUAL(h(sz, strlen(sz)), 12510474367240317);
 }
