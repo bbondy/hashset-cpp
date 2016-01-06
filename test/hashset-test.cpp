@@ -3,7 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include <iostream>
 #include "./CppUnitLite/TestHarness.h"
 #include "./CppUnitLite/Test.h"
 #include "./HashSet.h"
@@ -107,7 +106,12 @@ TEST(hashSet, test1) {
   }
 
   // Make sure HashFn produces the correct hash
-  HashFn h(19);
+  HashFn h(19, false);
+  HashFn h2(19, true);
   const char *sz = "facebook.com";
+  const char *sz2 = "abcde";
   LONGS_EQUAL(h(sz, strlen(sz)), 12510474367240317);
+  LONGS_EQUAL(h2(sz, strlen(sz)), 12510474367240317);
+  LONGS_EQUAL(h(sz2, strlen(sz2)), 13351059);
+  LONGS_EQUAL(h2(sz2, strlen(sz2)), 13351059);
 }
