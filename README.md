@@ -55,12 +55,6 @@ int main(int argc, char **argv) {
 make
 ```
 
-## Build everything in debug
-
-```
-make build-debug
-```
-
 ## Running sample
 
 ```
