@@ -102,6 +102,12 @@ TEST(hashSet, test1) {
     CHECK(dhs.exists(ExampleData("a\0b\0\0c", 6)));
     CHECK(!dhs.exists(ExampleData("a\0b\0\0c", 7)));
     LONGS_EQUAL(6, dhs.size());
+
+    // Make sure  HashSet clears correctly
+    CHECK(dhs.exists(ExampleData("test")));
+    dhs.clear();
+    CHECK(!dhs.exists(ExampleData("test")));
+
     delete[] buffer;
   }
 

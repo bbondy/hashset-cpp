@@ -23,12 +23,8 @@ class HashSet {
  public:
   typedef uint64_t (*HashSetFnPtr)(const T *hashItem);
 
-  explicit HashSet(uint32_t bucketCount)
-    : bucketCount(bucketCount), buckets(nullptr), _size(0) {
-    if (bucketCount != 0) {
-      buckets = new HashItem<T>*[bucketCount];
-      memset(buckets, 0, sizeof(HashItem<T>*) * bucketCount);
-    }
+  explicit HashSet(uint32_t bucketCount) {
+    init(bucketCount);
   }
 
   ~HashSet() {
@@ -230,6 +226,16 @@ class HashSet {
     return true;
   }
 
+  /**
+   * Clears the HashSet back to the original dimensions but
+   * with no data.
+   */
+  void clear() {
+    auto oldBucketCount = bucketCount;
+    cleanup();
+    init(oldBucketCount);
+  }
+
  private:
   bool hasNewlineBefore(char *buffer, uint32_t bufferSize) {
     char *p = buffer;
@@ -239,6 +245,16 @@ class HashSet {
       p++;
     }
     return false;
+  }
+
+  void init(uint32_t numBuckets) {
+    bucketCount = numBuckets;
+    buckets = nullptr;
+    _size = 0;
+    if (bucketCount != 0) {
+      buckets = new HashItem<T>*[bucketCount];
+      memset(buckets, 0, sizeof(HashItem<T>*) * bucketCount);
+    }
   }
 
   void cleanup() {
@@ -253,6 +269,7 @@ class HashSet {
       }
       delete[] buckets;
       buckets = nullptr;
+      bucketCount = 0;
       _size = 0;
     }
   }
