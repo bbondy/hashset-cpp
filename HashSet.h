@@ -15,20 +15,21 @@
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
+
 #include "./base.h"
 #include "./HashItem.h"
 
 template<class T>
 class HashSet {
  public:
-  typedef uint64_t (*HashSetFnPtr)(const T *hashItem);
+  typedef uint64_t (*HashSetFnPtr)(const T *hash_item);
 
-  explicit HashSet(uint32_t bucketCount) {
-    init(bucketCount);
+  explicit HashSet(uint32_t bucket_count) {
+    Init(bucket_count);
   }
 
   ~HashSet() {
-    cleanup();
+    Cleanup();
   }
 
   /**
@@ -36,59 +37,59 @@ class HashSet {
    * A copy of the data will be created, so the memory used to do the add
    * doesn't need to stick around.
    *
-   * @param newHashItem The node to add
-   * @param updateIfExists true if the item should be updated if it is already there
+   * @param item_to_add The node to add
+   * @param update_if_exists true if the item should be updated if it is already there
    *   false if the add should fail if it is alraedy there.
    * @return true if the data was added
    */
-  bool add(const T &itemToAdd, bool updateIfExists = true) {
-    uint64_t hash = itemToAdd.hash();
-    HashItem<T> *hashItem = buckets[hash % bucketCount];
-    if (!hashItem) {
-      hashItem = new HashItem<T>();
-      hashItem->hashItemStorage = new T(itemToAdd);
-      buckets[hash % bucketCount] = hashItem;
-      _size++;
+  bool Add(const T &item_to_add, bool update_if_exists = true) {
+    uint64_t hash = item_to_add.GetHash();
+    HashItem<T> *hash_item = buckets_[hash % bucket_count_];
+    if (!hash_item) {
+      hash_item = new HashItem<T>();
+      hash_item->hash_item_storage_ = new T(item_to_add);
+      buckets_[hash % bucket_count_] = hash_item;
+      size_++;
       return true;
     }
 
     while (true) {
-      if (*hashItem->hashItemStorage == itemToAdd) {
-        if (updateIfExists) {
-          hashItem->hashItemStorage->update(itemToAdd);
+      if (*hash_item->hash_item_storage_ == item_to_add) {
+        if (update_if_exists) {
+          hash_item->hash_item_storage_->Update(item_to_add);
         }
         return false;
       }
-      if (!hashItem->next) {
-        HashItem<T> *createdHashItem = new HashItem<T>();
-        createdHashItem->hashItemStorage = new T(itemToAdd);
-        hashItem->next = createdHashItem;
+      if (!hash_item->next_) {
+        HashItem<T> *created_hash_item = new HashItem<T>();
+        created_hash_item->hash_item_storage_ = new T(item_to_add);
+        hash_item->next_ = created_hash_item;
         break;
       }
-      hashItem = hashItem->next;
+      hash_item = hash_item->next_;
     }
 
-    _size++;
+    size_++;
     return true;
   }
 
   /**
    * Determines if the specified data exists in the set or not`
-   * @param dataToCheck The data to check
+   * @param data_to_check The data to check
    * @return true if the data found
    */
-  bool exists(const T &dataToCheck) {
-    uint64_t hash = dataToCheck.hash();
-    HashItem<T> *hashItem = buckets[hash % bucketCount];
-    if (!hashItem) {
+  bool Exists(const T &data_to_check) {
+    uint64_t hash = data_to_check.GetHash();
+    HashItem<T> *hash_item = buckets_[hash % bucket_count_];
+    if (!hash_item) {
       return false;
     }
 
-    while (hashItem) {
-      if (*hashItem->hashItemStorage == dataToCheck) {
+    while (hash_item) {
+      if (*hash_item->hash_item_storage_ == data_to_check) {
         return true;
       }
-      hashItem = hashItem->next;
+      hash_item = hash_item->next_;
     }
 
     return false;
@@ -98,21 +99,21 @@ class HashSet {
    * Finds the specific data in the hash set.
    * This is useful because sometimes it contains more context
    * than the object used for the lookup.
-   * @param dataToCheck The data to check
+   * @param data_to_check The data to check
    * @return The data stored in the hash set or nullptr if none is found.
    */
-  T * find(const T &dataToCheck) {
-    uint64_t hash = dataToCheck.hash();
-    HashItem<T> *hashItem = buckets[hash % bucketCount];
-    if (!hashItem) {
+  T * Find(const T &data_to_check) {
+    uint64_t hash = data_to_check.GetHash();
+    HashItem<T> *hash_item = buckets_[hash % bucket_count_];
+    if (!hash_item) {
       return nullptr;
     }
 
-    while (hashItem) {
-      if (*hashItem->hashItemStorage == dataToCheck) {
-        return hashItem->hashItemStorage;
+    while (hash_item) {
+      if (*hash_item->hash_item_storage_ == data_to_check) {
+        return hash_item->hash_item_storage_;
       }
-      hashItem = hashItem->next;
+      hash_item = hash_item->next_;
     }
 
     return nullptr;
@@ -120,32 +121,32 @@ class HashSet {
 
   /**
    * Removes the specific data in the hash set.
-   * @param dataToCheck The data to remove
+   * @param data_to_check The data to remove
    * @return true if an item matching the data was removed
    */
-  bool remove(const T &dataToCheck) {
-    uint64_t hash = dataToCheck.hash();
-    HashItem<T> *hashItem = buckets[hash % bucketCount];
-    if (!hashItem) {
+  bool Remove(const T &data_to_check) {
+    uint64_t hash = data_to_check.GetHash();
+    HashItem<T> *hash_item = buckets_[hash % bucket_count_];
+    if (!hash_item) {
       return false;
     }
 
-    HashItem<T> *lastItem = nullptr;
-    while (hashItem) {
-      if (*hashItem->hashItemStorage == dataToCheck) {
-        if (lastItem) {
-          lastItem->next = hashItem->next;
-          delete hashItem;
+    HashItem<T> *last_item = nullptr;
+    while (hash_item) {
+      if (*hash_item->hash_item_storage_ == data_to_check) {
+        if (last_item) {
+          last_item->next_ = hash_item->next_;
+          delete hash_item;
         } else {
-          buckets[hash % bucketCount] = hashItem->next;
-          delete hashItem;
+          buckets_[hash % bucket_count_] = hash_item->next_;
+          delete hash_item;
         }
-        _size--;
+        size_--;
         return true;
       }
 
-      lastItem = hashItem;
-      hashItem = hashItem->next;
+      last_item = hash_item;
+      hash_item = hash_item->next_;
     }
 
     return false;
@@ -155,8 +156,8 @@ class HashSet {
   /**
    * Obtains the number of items in the Hash Set
    */
-  uint32_t size() {
-    return _size;
+  uint32_t GetSize() {
+    return size_;
   }
 
   /**
@@ -165,12 +166,12 @@ class HashSet {
    * write to a file.
    * @return The returned buffer should be deleted by the caller.
    */
-  char * serialize(uint32_t *size) {
+  char * Serialize(uint32_t *size) {
      *size = 0;
-     *size += serializeBuckets(nullptr);
+     *size += SerializeBuckets(nullptr);
      char *buffer = new char[*size];
      memset(buffer, 0, *size);
-     serializeBuckets(buffer);
+     SerializeBuckets(buffer);
      return buffer;
   }
 
@@ -179,47 +180,47 @@ class HashSet {
    * Memory passed in will be used by this instance directly without copying
    * it in.
    * @param buffer The serialized data to deserialize
-   * @param bufferSize the size of the buffer to deserialize
+   * @param buffer_size the size of the buffer to deserialize
    * @return true if the operation was successful
    */
-  bool deserialize(char *buffer, uint32_t bufferSize) {
-    cleanup();
+  bool Deserialize(char *buffer, uint32_t buffer_size) {
+    Cleanup();
     uint32_t pos = 0;
-    if (!hasNewlineBefore(buffer, bufferSize)) {
+    if (!HasNewlineBefore(buffer, buffer_size)) {
       return false;
     }
-    sscanf(buffer + pos, "%x", &bucketCount);
-    buckets = new HashItem<T> *[bucketCount];
-    memset(buckets, 0, sizeof(HashItem<T>*) * bucketCount);
+    sscanf(buffer + pos, "%x", &bucket_count_);
+    buckets_ = new HashItem<T> *[bucket_count_];
+    memset(buckets_, 0, sizeof(HashItem<T>*) * bucket_count_);
     pos += static_cast<uint32_t>(strlen(buffer + pos)) + 1;
-    if (pos >= bufferSize) {
+    if (pos >= buffer_size) {
       return false;
     }
-    for (uint32_t i = 0; i < bucketCount; i++) {
-      HashItem<T> *lastHashItem = nullptr;
+    for (uint32_t i = 0; i < bucket_count_; i++) {
+      HashItem<T> *last_hash_item = nullptr;
       while (*(buffer + pos) != '\0') {
-        if (pos >= bufferSize) {
+        if (pos >= buffer_size) {
           return false;
         }
 
-        HashItem<T> *hashItem = new HashItem<T>();
-        hashItem->hashItemStorage = new T();
-        uint32_t deserializeSize =
-          hashItem->hashItemStorage->deserialize(buffer + pos,
-              bufferSize - pos);
-        pos += deserializeSize;
-        if (pos >= bufferSize || deserializeSize == 0) {
+        HashItem<T> *hash_item = new HashItem<T>();
+        hash_item->hash_item_storage_ = new T();
+        uint32_t deserialize_size =
+          hash_item->hash_item_storage_->Deserialize(buffer + pos,
+              buffer_size - pos);
+        pos += deserialize_size;
+        if (pos >= buffer_size || deserialize_size == 0) {
           return false;
         }
 
-        _size++;
+        size_++;
 
-        if (lastHashItem) {
-          lastHashItem->next = hashItem;
+        if (last_hash_item) {
+          last_hash_item->next_ = hash_item;
         } else {
-          buckets[i] = hashItem;
+          buckets_[i] = hash_item;
         }
-        lastHashItem = hashItem;
+        last_hash_item = hash_item;
       }
       pos++;
     }
@@ -230,16 +231,16 @@ class HashSet {
    * Clears the HashSet back to the original dimensions but
    * with no data.
    */
-  void clear() {
-    auto oldBucketCount = bucketCount;
-    cleanup();
-    init(oldBucketCount);
+  void Clear() {
+    auto old_bucket_count = bucket_count_;
+    Cleanup();
+    Init(old_bucket_count);
   }
 
  private:
-  bool hasNewlineBefore(char *buffer, uint32_t bufferSize) {
+  bool HasNewlineBefore(char *buffer, uint32_t buffer_size) {
     char *p = buffer;
-    for (uint32_t i = 0; i < bufferSize; ++i) {
+    for (uint32_t i = 0; i < buffer_size; ++i) {
       if (*p == '\0')
         return true;
       p++;
@@ -247,64 +248,64 @@ class HashSet {
     return false;
   }
 
-  void init(uint32_t numBuckets) {
-    bucketCount = numBuckets;
-    buckets = nullptr;
-    _size = 0;
-    if (bucketCount != 0) {
-      buckets = new HashItem<T>*[bucketCount];
-      memset(buckets, 0, sizeof(HashItem<T>*) * bucketCount);
+  void Init(uint32_t num_buckets) {
+    bucket_count_ = num_buckets;
+    buckets_ = nullptr;
+    size_ = 0;
+    if (bucket_count_ != 0) {
+      buckets_ = new HashItem<T>*[bucket_count_];
+      memset(buckets_, 0, sizeof(HashItem<T>*) * bucket_count_);
     }
   }
 
-  void cleanup() {
-    if (buckets) {
-      for (uint32_t i = 0; i < bucketCount; i++) {
-        HashItem<T> *hashItem = buckets[i];
-        while (hashItem) {
-          HashItem<T> *tempHashItem = hashItem;
-          hashItem = hashItem->next;
-          delete tempHashItem;
+  void Cleanup() {
+    if (buckets_) {
+      for (uint32_t i = 0; i < bucket_count_; i++) {
+        HashItem<T> *hash_item = buckets_[i];
+        while (hash_item) {
+          HashItem<T> *temp_hash_item = hash_item;
+          hash_item = hash_item->next_;
+          delete temp_hash_item;
         }
       }
-      delete[] buckets;
-      buckets = nullptr;
-      bucketCount = 0;
-      _size = 0;
+      delete[] buckets_;
+      buckets_ = nullptr;
+      bucket_count_ = 0;
+      size_ = 0;
     }
   }
 
-  uint32_t serializeBuckets(char *buffer) {
-    uint32_t totalSize = 0;
+  uint32_t SerializeBuckets(char *buffer) {
+    uint32_t total_size = 0;
     char sz[512];
-    totalSize += 1 + snprintf(sz, sizeof(sz), "%x", bucketCount);
+    total_size += 1 + snprintf(sz, sizeof(sz), "%x", bucket_count_);
     if (buffer) {
-      memcpy(buffer, sz, totalSize);
+      memcpy(buffer, sz, total_size);
     }
-    for (uint32_t i = 0; i < bucketCount; i++) {
-      HashItem<T> *hashItem = buckets[i];
-      while (hashItem) {
+    for (uint32_t i = 0; i < bucket_count_; i++) {
+      HashItem<T> *hash_item = buckets_[i];
+      while (hash_item) {
         if (buffer) {
-          totalSize +=
-            hashItem->hashItemStorage->serialize(buffer + totalSize);
+          total_size +=
+            hash_item->hash_item_storage_->Serialize(buffer + total_size);
         } else {
-          totalSize += hashItem->hashItemStorage->serialize(nullptr);
+          total_size += hash_item->hash_item_storage_->Serialize(nullptr);
         }
-        hashItem = hashItem->next;
+        hash_item = hash_item->next_;
       }
       if (buffer) {
-        buffer[totalSize] = '\0';
+        buffer[total_size] = '\0';
       }
       // Second null terminator to show next bucket
-      totalSize++;
+      total_size++;
     }
-    return totalSize;
+    return total_size;
   }
 
  protected:
-  uint32_t bucketCount;
-  HashItem<T> **buckets;
-  uint32_t _size;
+  uint32_t bucket_count_;
+  HashItem<T> **buckets_;
+  uint32_t size_;
 };
 
 #endif  // HASHSET_H_

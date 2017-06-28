@@ -14,96 +14,96 @@ static HashFn h(19);
 
 class ExampleData {
  public:
-  uint64_t hash() const {
-    return h(data, dataLen);
+  uint64_t GetHash() const {
+    return h(data_, data_len_);
   }
 
   ~ExampleData() {
-    if (data && !borrowedMemory) {
-      delete[] data;
+    if (data_ && !borrowed_memory_) {
+      delete[] data_;
     }
   }
   explicit ExampleData(const char *data) {
-    dataLen = static_cast<uint32_t>(strlen(data)) + 1;
-    this->data = new char[dataLen];
-    memcpy(this->data, data, dataLen);
-    borrowedMemory = false;
-    extraData = 0;
+    data_len_ = static_cast<uint32_t>(strlen(data)) + 1;
+    data_ = new char[data_len_];
+    memcpy(data_, data, data_len_);
+    borrowed_memory_ = false;
+    extra_data_ = 0;
   }
 
-  ExampleData(const char *data, int dataLen) {
-    this->dataLen = dataLen;
-    this->data = new char[dataLen];
-    memcpy(this->data, data, dataLen);
-    borrowedMemory = false;
-    extraData = 0;
+  ExampleData(const char *data, int data_len) {
+    data_len_ = data_len;
+    data_ = new char[data_len];
+    memcpy(data_, data, data_len);
+    borrowed_memory_ = false;
+    extra_data_ = 0;
   }
 
   ExampleData(const ExampleData &rhs) {
-    this->dataLen = rhs.dataLen;
-    data = new char[dataLen];
-    memcpy(data, rhs.data, dataLen);
-    borrowedMemory = rhs.borrowedMemory;
-    extraData = rhs.extraData;
+    data_len_ = rhs.data_len_;
+    data_ = new char[data_len_];
+    memcpy(data_, rhs.data_, data_len_);
+    borrowed_memory_ = rhs.borrowed_memory_;
+    extra_data_ = rhs.extra_data_;
   }
 
-  ExampleData() : extraData(0), data(nullptr), dataLen(0),
-    borrowedMemory(false) {
+  ExampleData() : extra_data_(0), data_(nullptr), data_len_(0),
+    borrowed_memory_(false) {
   }
 
   bool operator==(const ExampleData &rhs) const {
-    if (dataLen != rhs.dataLen) {
+    if (data_len_ != rhs.data_len_) {
       return false;
     }
 
-    return !memcmp(data, rhs.data, dataLen);
+    return !memcmp(data_, rhs.data_, data_len_);
   }
 
   bool operator!=(const ExampleData &rhs) const {
     return !(*this == rhs);
   }
 
-  void update(const ExampleData &other) {
-    extraData = extraData | other.extraData;
+  void Update(const ExampleData &other) {
+    extra_data_ = extra_data_ | other.extra_data_;
   }
 
-  uint32_t serialize(char *buffer) {
-    uint32_t totalSize = 0;
+  uint32_t Serialize(char *buffer) {
+    uint32_t total_size = 0;
     char sz[32];
-    uint32_t dataLenSize = 1 + snprintf(sz, sizeof(sz), "%x", dataLen);
+    uint32_t data_len_size = 1 + snprintf(sz, sizeof(sz), "%x", data_len_);
     if (buffer) {
-      memcpy(buffer + totalSize, sz, dataLenSize);
+      memcpy(buffer + total_size, sz, data_len_size);
     }
-    totalSize += dataLenSize;
+    total_size += data_len_size;
     if (buffer) {
-      memcpy(buffer + totalSize, data, dataLen);
+      memcpy(buffer + total_size, data_, data_len_);
     }
-    totalSize += dataLen;
+    total_size += data_len_;
 
     if (buffer) {
-      buffer[totalSize] = extraData;
+      buffer[total_size] = extra_data_;
     }
-    totalSize++;
+    total_size++;
 
-    return totalSize;
+    return total_size;
   }
 
-  uint32_t deserialize(char *buffer, uint32_t bufferSize) {
-    dataLen = 0;
-    if (!hasNewlineBefore(buffer, bufferSize)) {
+  uint32_t Deserialize(char *buffer, uint32_t buffer_size) {
+    data_len_ = 0;
+    if (!HasNewlineBefore(buffer, buffer_size)) {
       return 0;
     }
-    sscanf(buffer, "%x", &dataLen);
+    sscanf(buffer, "%x", &data_len_);
     uint32_t consumed = static_cast<uint32_t>(strlen(buffer)) + 1;
-    if (consumed + dataLen >= bufferSize) {
+    if (consumed + data_len_ >= buffer_size) {
       return 0;
     }
-    data = buffer + consumed;
-    borrowedMemory = true;
-    memcpy(data, buffer + consumed, dataLen);
-    consumed += dataLen;
+    data_ = buffer + consumed;
+    borrowed_memory_ = true;
+    memcpy(data_, buffer + consumed, data_len_);
+    consumed += data_len_;
 
-    extraData = buffer[consumed];
+    extra_data_ = buffer[consumed];
     consumed++;
 
     return consumed;
@@ -112,12 +112,12 @@ class ExampleData {
   // Just an example which is not used in comparisons but
   // is used for serializing / deserializing, showing the
   // need for find vs exists.
-  char extraData;
+  char extra_data_;
 
  private:
-  bool hasNewlineBefore(char *buffer, uint32_t bufferSize) {
+  bool HasNewlineBefore(char *buffer, uint32_t buffer_size) {
     char *p = buffer;
-    for (uint32_t i = 0; i < bufferSize; ++i) {
+    for (uint32_t i = 0; i < buffer_size; ++i) {
       if (*p == '\0')
         return true;
       p++;
@@ -125,9 +125,9 @@ class ExampleData {
     return false;
   }
 
-  char *data;
-  uint32_t dataLen;
-  bool borrowedMemory;
+  char *data_;
+  uint32_t data_len_;
+  bool borrowed_memory_;
 };
 
 #endif  // TEST_EXAMPLEDATA_H_

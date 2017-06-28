@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "HashSetWrap.h"
+#include "./HashSetWrap.h"
 
 namespace HashSetWrap {
 
@@ -21,8 +21,8 @@ using v8::Value;
 
 Persistent<Function> HashSetWrap::constructor;
 
-HashSetWrap::HashSetWrap(uint32_t bucketCount)
-  : HashSet(bucketCount) {
+HashSetWrap::HashSetWrap(uint32_t bucket_count)
+  : HashSet(bucket_count) {
 }
 
 HashSetWrap::~HashSetWrap() {
@@ -37,8 +37,8 @@ void HashSetWrap::Init(Local<Object> exports) {
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
 
   // Prototype
-  NODE_SET_PROTOTYPE_METHOD(tpl, "add", HashSetWrap::Add);
-  NODE_SET_PROTOTYPE_METHOD(tpl, "exists", HashSetWrap::Exists);
+  NODE_SET_PROTOTYPE_METHOD(tpl, "add", HashSetWrap::AddItem);
+  NODE_SET_PROTOTYPE_METHOD(tpl, "exists", HashSetWrap::ItemExists);
 
   constructor.Reset(isolate, tpl->GetFunction());
   exports->Set(String::NewFromUtf8(isolate, "HashSet"),
@@ -62,21 +62,21 @@ void HashSetWrap::New(const FunctionCallbackInfo<Value>& args) {
   }
 }
 
-void HashSetWrap::Add(const FunctionCallbackInfo<Value>& args) {
+void HashSetWrap::AddItem(const FunctionCallbackInfo<Value>& args) {
   String::Utf8Value str(args[0]->ToString());
   const char * buffer = *str;
 
   HashSetWrap* obj = ObjectWrap::Unwrap<HashSetWrap>(args.Holder());
-  obj->add(ExampleData(buffer));
+  obj->Add(ExampleData(buffer));
 }
 
-void HashSetWrap::Exists(const FunctionCallbackInfo<Value>& args) {
+void HashSetWrap::ItemExists(const FunctionCallbackInfo<Value>& args) {
   Isolate* isolate = args.GetIsolate();
   String::Utf8Value str(args[0]->ToString());
   const char * buffer = *str;
 
   HashSetWrap* obj = ObjectWrap::Unwrap<HashSetWrap>(args.Holder());
-  bool exists = obj->exists(ExampleData(buffer));
+  bool exists = obj->Exists(ExampleData(buffer));
 
   args.GetReturnValue().Set(Boolean::New(isolate, exists));
 }

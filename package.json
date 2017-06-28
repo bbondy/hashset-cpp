@@ -1,13 +1,12 @@
 {
   "name": "hashset-cpp",
   "main": "./build/Release/hashset-cpp",
-  "version": "1.0.18",
+  "version": "2.0.1",
   "description": "",
   "directories": {
     "test": "test"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "node-gyp": "^3.4.0",
     "pre-commit": "^1.1.2",

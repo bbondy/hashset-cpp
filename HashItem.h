@@ -11,17 +11,17 @@
 template<class T>
 class HashItem {
  public:
-  HashItem() : next(nullptr), hashItemStorage(nullptr) {
+  HashItem() : next_(nullptr), hash_item_storage_(nullptr) {
   }
 
   ~HashItem() {
-    if (hashItemStorage) {
-      delete hashItemStorage;
+    if (hash_item_storage_) {
+      delete hash_item_storage_;
     }
   }
 
-  HashItem *next;
-  T *hashItemStorage;
+  HashItem *next_;
+  T *hash_item_storage_;
 };
 
 #endif  // HASHITEM_H_

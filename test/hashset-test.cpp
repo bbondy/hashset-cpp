@@ -9,104 +9,104 @@
 #include "./exampleData.h"
 #include "./hashFn.h"
 
-TEST(hashSet, test1) {
+TEST(hash_set, test1) {
   {
-    HashSet<ExampleData> hashSet(2);
-    hashSet.add(ExampleData("test"));
+    HashSet<ExampleData> hash_set(2);
+    hash_set.Add(ExampleData("test"));
     uint32_t len;
-    char *buffer = hashSet.serialize(&len);
-    HashSet<ExampleData> hashSet2(0);
-    hashSet2.deserialize(buffer, len);
-    hashSet2.exists(ExampleData("test"));
+    char *buffer = hash_set.Serialize(&len);
+    HashSet<ExampleData> hash_set2(0);
+    hash_set2.Deserialize(buffer, len);
+    hash_set2.Exists(ExampleData("test"));
   }
 
-  HashSet<ExampleData> hashSets[] = {HashSet<ExampleData>(1),
+  HashSet<ExampleData> hash_sets[] = {HashSet<ExampleData>(1),
     HashSet<ExampleData>(2), HashSet<ExampleData>(500)};
-  for (unsigned int i = 0; i < sizeof(hashSets) / sizeof(hashSets[0]); i++) {
-    HashSet<ExampleData> &hashSet = hashSets[i];
-    LONGS_EQUAL(0, hashSet.size());
-    hashSet.add(ExampleData("test"));
-    LONGS_EQUAL(1, hashSet.size());
-    CHECK(hashSet.exists(ExampleData("test")));
-    hashSet.add(ExampleData("test"));
-    CHECK(hashSet.exists(ExampleData("test")));
-    LONGS_EQUAL(1, hashSet.size());
-    hashSet.add(ExampleData("test2"));
-    CHECK(hashSet.exists(ExampleData("test2")));
-    LONGS_EQUAL(2, hashSet.size());
-    hashSet.add(ExampleData("test3"));
-    CHECK(hashSet.exists(ExampleData("test3")));
-    hashSet.add(ExampleData("test4"));
-    CHECK(hashSet.exists(ExampleData("test4")));
+  for (unsigned int i = 0; i < sizeof(hash_sets) / sizeof(hash_sets[0]); i++) {
+    HashSet<ExampleData> &hash_set = hash_sets[i];
+    LONGS_EQUAL(0, hash_set.GetSize());
+    hash_set.Add(ExampleData("test"));
+    LONGS_EQUAL(1, hash_set.GetSize());
+    CHECK(hash_set.Exists(ExampleData("test")));
+    hash_set.Add(ExampleData("test"));
+    CHECK(hash_set.Exists(ExampleData("test")));
+    LONGS_EQUAL(1, hash_set.GetSize());
+    hash_set.Add(ExampleData("test2"));
+    CHECK(hash_set.Exists(ExampleData("test2")));
+    LONGS_EQUAL(2, hash_set.GetSize());
+    hash_set.Add(ExampleData("test3"));
+    CHECK(hash_set.Exists(ExampleData("test3")));
+    hash_set.Add(ExampleData("test4"));
+    CHECK(hash_set.Exists(ExampleData("test4")));
 
     // Check that a smaller substring of something that exists, doesn't exist
-    CHECK(!hashSet.exists(ExampleData("tes")));
+    CHECK(!hash_set.Exists(ExampleData("tes")));
     // Check that a longer string of something that exists, doesn't exist
-    CHECK(!hashSet.exists(ExampleData("test22")));
-    CHECK(!hashSet.exists(ExampleData("test5")));
+    CHECK(!hash_set.Exists(ExampleData("test22")));
+    CHECK(!hash_set.Exists(ExampleData("test5")));
 
-    LONGS_EQUAL(4, hashSet.size());
-    hashSet.add(ExampleData("a\0b\0\0c", 6));
-    LONGS_EQUAL(5, hashSet.size());
-    CHECK(!hashSet.exists(ExampleData("a")));
-    CHECK(!hashSet.exists(ExampleData("a", 1)));
-    CHECK(hashSet.exists(ExampleData("a\0b\0\0c", 6)));
-    CHECK(!hashSet.exists(ExampleData("a\0b\0\0c", 7)));
+    LONGS_EQUAL(4, hash_set.GetSize());
+    hash_set.Add(ExampleData("a\0b\0\0c", 6));
+    LONGS_EQUAL(5, hash_set.GetSize());
+    CHECK(!hash_set.Exists(ExampleData("a")));
+    CHECK(!hash_set.Exists(ExampleData("a", 1)));
+    CHECK(hash_set.Exists(ExampleData("a\0b\0\0c", 6)));
+    CHECK(!hash_set.Exists(ExampleData("a\0b\0\0c", 7)));
 
     // Test that remove works
-    LONGS_EQUAL(5, hashSet.size());
-    CHECK(hashSet.exists(ExampleData("test2")));
-    CHECK(hashSet.remove(ExampleData("test2")));
-    LONGS_EQUAL(4, hashSet.size());
-    CHECK(!hashSet.exists(ExampleData("test2")));
-    CHECK(!hashSet.remove(ExampleData("test2")));
-    LONGS_EQUAL(4, hashSet.size());
-    CHECK(hashSet.add(ExampleData("test2")));
-    LONGS_EQUAL(5, hashSet.size());
+    LONGS_EQUAL(5, hash_set.GetSize());
+    CHECK(hash_set.Exists(ExampleData("test2")));
+    CHECK(hash_set.Remove(ExampleData("test2")));
+    LONGS_EQUAL(4, hash_set.GetSize());
+    CHECK(!hash_set.Exists(ExampleData("test2")));
+    CHECK(!hash_set.Remove(ExampleData("test2")));
+    LONGS_EQUAL(4, hash_set.GetSize());
+    CHECK(hash_set.Add(ExampleData("test2")));
+    LONGS_EQUAL(5, hash_set.GetSize());
 
     // Try to find something that doesn't exist
-    CHECK(hashSet.find(ExampleData("fdsafasd")) == nullptr);
+    CHECK(hash_set.Find(ExampleData("fdsafasd")) == nullptr);
 
     // Show how extra data works
     ExampleData item("ok");
-    item.extraData = 1;
-    hashSet.add(item);
+    item.extra_data_ = 1;
+    hash_set.Add(item);
 
-    ExampleData *p = hashSet.find(ExampleData("ok"));
-    LONGS_EQUAL(1, p->extraData);
+    ExampleData *p = hash_set.Find(ExampleData("ok"));
+    LONGS_EQUAL(1, p->extra_data_);
 
-    item.extraData = 2;
-    hashSet.add(item);
-    LONGS_EQUAL(6, hashSet.size());
-    // ExampleData is configuredd to merge extraData on updates
-    LONGS_EQUAL(3, p->extraData);
+    item.extra_data_ = 2;
+    hash_set.Add(item);
+    LONGS_EQUAL(6, hash_set.GetSize());
+    // ExampleData is configuredd to merge extra_data_ on updates
+    LONGS_EQUAL(3, p->extra_data_);
   }
 
   uint32_t len = 0;
-  for (unsigned int i = 0; i < sizeof(hashSets) / sizeof(hashSets[0]); i++) {
-    HashSet<ExampleData> &hs1 = hashSets[i];
-    char *buffer = hs1.serialize(&len);
+  for (unsigned int i = 0; i < sizeof(hash_sets) / sizeof(hash_sets[0]); i++) {
+    HashSet<ExampleData> &hs1 = hash_sets[i];
+    char *buffer = hs1.Serialize(&len);
     HashSet<ExampleData> dhs(0);
     // Deserializing some invalid data should fail
-    CHECK(!dhs.deserialize(const_cast<char*>("31131"), 2));
-    CHECK(dhs.deserialize(buffer, len));
-    CHECK(dhs.exists(ExampleData("test")));
-    CHECK(dhs.exists(ExampleData("test2")));
-    CHECK(dhs.exists(ExampleData("test3")));
-    CHECK(dhs.exists(ExampleData("test4")));
-    CHECK(!dhs.exists(ExampleData("tes")));
-    CHECK(!dhs.exists(ExampleData("test22")));
-    CHECK(!dhs.exists(ExampleData("test5")));
-    CHECK(!dhs.exists(ExampleData("a")));
-    CHECK(!dhs.exists(ExampleData("a", 1)));
-    CHECK(dhs.exists(ExampleData("a\0b\0\0c", 6)));
-    CHECK(!dhs.exists(ExampleData("a\0b\0\0c", 7)));
-    LONGS_EQUAL(6, dhs.size());
+    CHECK(!dhs.Deserialize(const_cast<char*>("31131"), 2));
+    CHECK(dhs.Deserialize(buffer, len));
+    CHECK(dhs.Exists(ExampleData("test")));
+    CHECK(dhs.Exists(ExampleData("test2")));
+    CHECK(dhs.Exists(ExampleData("test3")));
+    CHECK(dhs.Exists(ExampleData("test4")));
+    CHECK(!dhs.Exists(ExampleData("tes")));
+    CHECK(!dhs.Exists(ExampleData("test22")));
+    CHECK(!dhs.Exists(ExampleData("test5")));
+    CHECK(!dhs.Exists(ExampleData("a")));
+    CHECK(!dhs.Exists(ExampleData("a", 1)));
+    CHECK(dhs.Exists(ExampleData("a\0b\0\0c", 6)));
+    CHECK(!dhs.Exists(ExampleData("a\0b\0\0c", 7)));
+    LONGS_EQUAL(6, dhs.GetSize());
 
     // Make sure  HashSet clears correctly
-    CHECK(dhs.exists(ExampleData("test")));
-    dhs.clear();
-    CHECK(!dhs.exists(ExampleData("test")));
+    CHECK(dhs.Exists(ExampleData("test")));
+    dhs.Clear();
+    CHECK(!dhs.Exists(ExampleData("test")));
 
     delete[] buffer;
   }

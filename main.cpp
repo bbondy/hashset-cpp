@@ -12,24 +12,24 @@ using std::endl;
 
 int main(int argc, char **argv) {
   HashSet<ExampleData> set(256);
-  set.add(ExampleData("test"));
+  set.Add(ExampleData("test"));
 
   // Prints true
-  cout << "test exists: " << (set.exists(ExampleData("test"))
+  cout << "test exists: " << (set.Exists(ExampleData("test"))
       ? "true" : "false") << endl;
   // Prints false
-  cout << "test2 exists: " << (set.exists(ExampleData("test2"))
+  cout << "test2 exists: " << (set.Exists(ExampleData("test2"))
       ? "true" : "false") << endl;
 
   uint32_t len;
-  char * buffer = set.serialize(&len);
+  char * buffer = set.Serialize(&len);
   HashSet<ExampleData> set2(0);
-  set2.deserialize(buffer, len);
+  set2.Deserialize(buffer, len);
   // Prints true
-  cout << "test exists: " << (set2.exists(ExampleData("test"))
+  cout << "test exists: " << (set2.Exists(ExampleData("test"))
       ? "true" : "false") << endl;
   // Prints false
-  cout << "test2 exists: " << (set2.exists(ExampleData("test2"))
+  cout << "test2 exists: " << (set2.Exists(ExampleData("test2"))
       ? "true" : "false") << endl;
 
   delete[] buffer;
