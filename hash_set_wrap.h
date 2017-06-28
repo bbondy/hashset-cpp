@@ -22,7 +22,7 @@ class HashSetWrap : public HashSet<ExampleData>, public node::ObjectWrap {
   static void Init(v8::Local<v8::Object> exports);
 
  private:
-  explicit HashSetWrap(uint32_t bucket_count);
+  explicit HashSetWrap(uint32_t bucket_count, bool multi_set);
   virtual ~HashSetWrap();
 
   static void New(const v8::FunctionCallbackInfo<v8::Value>& args);

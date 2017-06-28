@@ -21,8 +21,8 @@ using v8::Value;
 
 Persistent<Function> HashSetWrap::constructor;
 
-HashSetWrap::HashSetWrap(uint32_t bucket_count)
-  : HashSet(bucket_count) {
+HashSetWrap::HashSetWrap(uint32_t bucket_count, bool multi_set)
+  : HashSet(bucket_count, multi_set) {
 }
 
 HashSetWrap::~HashSetWrap() {
@@ -50,7 +50,7 @@ void HashSetWrap::New(const FunctionCallbackInfo<Value>& args) {
 
   if (args.IsConstructCall()) {
     // Invoked as constructor: `new HashSet(...)`
-    HashSetWrap* obj = new HashSetWrap(1024);
+    HashSetWrap* obj = new HashSetWrap(1024, false);
     obj->Wrap(args.This());
     args.GetReturnValue().Set(args.This());
   } else {

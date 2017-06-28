@@ -15,6 +15,7 @@
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
+#include <vector>
 
 #include "./base.h"
 #include "./hash_item.h"
@@ -24,7 +25,12 @@ class HashSet {
  public:
   typedef uint64_t (*HashSetFnPtr)(const T *hash_item);
 
-  explicit HashSet(uint32_t bucket_count) {
+  /**
+   * @param bucket_count The number of buckets to create for the hash set
+   * @param multi_set Allow multiple items with the same hash to be added.
+   */
+  explicit HashSet(uint32_t bucket_count, bool multi_set)
+      : multi_set_(multi_set) {
     Init(bucket_count);
   }
 
@@ -39,7 +45,8 @@ class HashSet {
    *
    * @param item_to_add The node to add
    * @param update_if_exists true if the item should be updated if it is already there
-   *   false if the add should fail if it is alraedy there.
+   *   false if the add should fail if it is alraedy there. If multi_set is true and
+   *   upate_if_exists is false than the same hash'ed item will be added again.
    * @return true if the data was added
    */
   bool Add(const T &item_to_add, bool update_if_exists = true) {
@@ -57,8 +64,10 @@ class HashSet {
       if (*hash_item->hash_item_storage_ == item_to_add) {
         if (update_if_exists) {
           hash_item->hash_item_storage_->Update(item_to_add);
+          return false;
+        } else if (!multi_set_) {
+          return false;
         }
-        return false;
       }
       if (!hash_item->next_) {
         HashItem<T> *created_hash_item = new HashItem<T>();
@@ -96,6 +105,29 @@ class HashSet {
   }
 
   /**
+   * Determines if the specified data exists in the set or not`
+   * @param data_to_check The data to check
+   * @return true if the data found
+   */
+  size_t GetMatchingCount(const T &data_to_check) {
+    size_t count = 0;
+    uint64_t hash = data_to_check.GetHash();
+    HashItem<T> *hash_item = buckets_[hash % bucket_count_];
+    if (!hash_item) {
+      return count;
+    }
+
+    while (hash_item) {
+      if (*hash_item->hash_item_storage_ == data_to_check) {
+        count++;
+      }
+      hash_item = hash_item->next_;
+    }
+
+    return count;
+  }
+
+  /**
    * Finds the specific data in the hash set.
    * This is useful because sometimes it contains more context
    * than the object used for the lookup.
@@ -117,6 +149,28 @@ class HashSet {
     }
 
     return nullptr;
+  }
+
+  /**
+   * Finds the specific data in the hash set.
+   * This is useful because sometimes it contains more context
+   * than the object used for the lookup.
+   * @param data_to_check The data to check
+   * @return The data stored in the hash set or nullptr if none is found.
+   */
+  void FindAll(const T &data_to_check, std::vector<T*> *result) {
+    uint64_t hash = data_to_check.GetHash();
+    HashItem<T> *hash_item = buckets_[hash % bucket_count_];
+    if (!hash_item) {
+      return;
+    }
+
+    while (hash_item) {
+      if (*hash_item->hash_item_storage_ == data_to_check) {
+        result->push_back(hash_item->hash_item_storage_);
+      }
+      hash_item = hash_item->next_;
+    }
   }
 
   /**
@@ -189,7 +243,10 @@ class HashSet {
     if (!HasNewlineBefore(buffer, buffer_size)) {
       return false;
     }
-    sscanf(buffer + pos, "%x", &bucket_count_);
+
+    uint32_t multi_set = 0;
+    sscanf(buffer + pos, "%x,%x", &bucket_count_, &multi_set);
+    multi_set_ = multi_set != 0;
     buckets_ = new HashItem<T> *[bucket_count_];
     memset(buckets_, 0, sizeof(HashItem<T>*) * bucket_count_);
     pos += static_cast<uint32_t>(strlen(buffer + pos)) + 1;
@@ -278,7 +335,8 @@ class HashSet {
   uint32_t SerializeBuckets(char *buffer) {
     uint32_t total_size = 0;
     char sz[512];
-    total_size += 1 + snprintf(sz, sizeof(sz), "%x", bucket_count_);
+    total_size += 1 + snprintf(sz, sizeof(sz), "%x,%x",
+        bucket_count_, multi_set_ ? 1 : 0);
     if (buffer) {
       memcpy(buffer, sz, total_size);
     }
@@ -303,6 +361,7 @@ class HashSet {
   }
 
  protected:
+  bool multi_set_;
   uint32_t bucket_count_;
   HashItem<T> **buckets_;
   uint32_t size_;
