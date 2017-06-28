@@ -3,10 +3,10 @@
     "target_name": "sample",
     "type": "executable",
     "sources": [
-      "../main.cpp",
-      "../HashSet.cpp",
-      "../HashSet.h",
-      "../test/exampleData.h"
+      "../main.cc",
+      "../hash_set.cc",
+      "../hash_set.h",
+      "../test/example_data.h"
     ],
     "include_dirs": [
       "..",

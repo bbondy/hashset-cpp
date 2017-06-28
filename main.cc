@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include <iostream>
-#include "./HashSet.h"
-#include "./test/exampleData.h"
+#include "./hash_set.h"
+#include "./test/example_data.h"
 
 using std::cout;
 using std::endl;

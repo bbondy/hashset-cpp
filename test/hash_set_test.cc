@@ -5,8 +5,8 @@
 
 #include "./CppUnitLite/TestHarness.h"
 #include "./CppUnitLite/Test.h"
-#include "./HashSet.h"
-#include "./exampleData.h"
+#include "./hash_set.h"
+#include "./example_data.h"
 #include "./hashFn.h"
 
 TEST(hash_set, test1) {

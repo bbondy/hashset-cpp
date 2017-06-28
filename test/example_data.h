@@ -3,8 +3,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef TEST_EXAMPLEDATA_H_
-#define TEST_EXAMPLEDATA_H_
+#ifndef TEST_EXAMPLE_DATA_H_
+#define TEST_EXAMPLE_DATA_H_
 
 #include <math.h>
 #include <string.h>
@@ -130,4 +130,4 @@ class ExampleData {
   bool borrowed_memory_;
 };
 
-#endif  // TEST_EXAMPLEDATA_H_
+#endif  // TEST_EXAMPLE_DATA_H_

@@ -3,14 +3,14 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef HASHSETWRAP_H_
-#define HASHSETWRAP_H_
+#ifndef HASH_SET_WRAP_H_
+#define HASH_SET_WRAP_H_
 
 #include <node.h>
 #include <node_object_wrap.h>
 
-#include "HashSet.h"
-#include "test/exampleData.h"
+#include "./hash_set.h"
+#include "./test/example_data.h"
 
 namespace HashSetWrap {
 
@@ -35,4 +35,4 @@ class HashSetWrap : public HashSet<ExampleData>, public node::ObjectWrap {
 
 }  // namespace HashSetWrap
 
-#endif  // HASHSETWRAP_H_
+#endif  // HASH_SET_WRAP_H_

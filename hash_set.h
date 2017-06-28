@@ -8,8 +8,8 @@
 // Instead consider using `hash_set` which is a more generic implementation
 // with templates.
 
-#ifndef HASHSET_H_
-#define HASHSET_H_
+#ifndef HASH_SET_H_
+#define HASH_SET_H_
 
 #include <stdint.h>
 #include <math.h>
@@ -17,7 +17,7 @@
 #include <stdio.h>
 
 #include "./base.h"
-#include "./HashItem.h"
+#include "./hash_item.h"
 
 template<class T>
 class HashSet {
@@ -308,4 +308,4 @@ class HashSet {
   uint32_t size_;
 };
 
-#endif  // HASHSET_H_
+#endif  // HASH_SET_H_
