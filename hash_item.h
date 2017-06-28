@@ -3,8 +3,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef HASHITEM_H_
-#define HASHITEM_H_
+#ifndef HASH_ITEM_H_
+#define HASH_ITEM_H_
 
 #include "./base.h"
 
@@ -24,4 +24,4 @@ class HashItem {
   T *hash_item_storage_;
 };
 
-#endif  // HASHITEM_H_
+#endif  // HASH_ITEM_H_

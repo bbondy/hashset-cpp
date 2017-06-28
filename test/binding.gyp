@@ -3,11 +3,11 @@
     "target_name": "test",
     "type": "executable",
     "sources": [
-      "../test/test-main.cpp",
-      "../test/hashset-test.cpp",
-      "../test/exampleData.h",
-      "../HashSet.cpp",
-      "../HashSet.h",
+      "../test/test_main.cc",
+      "../test/hash_set_test.cc",
+      "../test/example_data.h",
+      "../Hash_set.cc",
+      "../Hash_set.h",
     ],
     "include_dirs": [
       "..",

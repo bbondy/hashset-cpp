@@ -2,11 +2,11 @@
   "targets": [{
     "target_name": "hashset-cpp",
     "sources": [
-      "addon.cpp",
-      "HashSetWrap.cpp",
-      "HashSetWrap.h",
-      "HashSet.cpp",
-      "HashSet.h",
+      "addon.cc",
+      "hash_set_wrap.cc",
+      "hash_set_wrap.h",
+      "hash_set.cc",
+      "hash_set.h",
     ],
     "include_dirs": [
       ".",
