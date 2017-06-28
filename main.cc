@@ -11,7 +11,8 @@ using std::cout;
 using std::endl;
 
 int main(int argc, char **argv) {
-  HashSet<ExampleData> set(256);
+  // Bucket size is 256 and don't allow multiple items per item hash.
+  HashSet<ExampleData> set(256, false);
   set.Add(ExampleData("test"));
 
   // Prints true
@@ -23,7 +24,7 @@ int main(int argc, char **argv) {
 
   uint32_t len;
   char * buffer = set.Serialize(&len);
-  HashSet<ExampleData> set2(0);
+  HashSet<ExampleData> set2(0, false);
   set2.Deserialize(buffer, len);
   // Prints true
   cout << "test exists: " << (set2.Exists(ExampleData("test"))
