@@ -1,14 +1,12 @@
-static_library("hashset_cpp") {
-  configs += [
-    "//electron/build:electron_config",
-  ]
+config("external_config") {
+  include_dirs = [ ".." ]
+}
 
-  include_dirs = [
-    "//electron/vendor/hashset-cpp",
-  ]
+source_set("hashset_cpp") {
+  public_configs = [ ":external_config" ]
 
   sources = [
-    "//electron/vendor/hashset-cpp/HashSet.cpp",
-    "//electron/vendor/hashset-cpp/HashSet.h",
+    "../HashSet.cpp",
+    "../HashSet.h",
   ]
 }
