@@ -1,4 +1,4 @@
-source_set("hashset_cpp") {
+static_library("hashset_cpp") {
   configs += [
     "//electron/build:electron_config",
   ]
