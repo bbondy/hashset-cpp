@@ -24,6 +24,7 @@ TEST(hash_set, not_multi_set) {
     HashSet<ExampleData>(2, false), HashSet<ExampleData>(500, false)};
   for (unsigned int i = 0; i < sizeof(hash_sets) / sizeof(hash_sets[0]); i++) {
     HashSet<ExampleData> &hash_set = hash_sets[i];
+    CHECK(!hash_set.IsMultiSet());
     LONGS_EQUAL(0, hash_set.GetSize());
     hash_set.Add(ExampleData("test"));
     LONGS_EQUAL(1, hash_set.GetSize());
@@ -137,6 +138,7 @@ TEST(hash_set, multi_set) {
     HashSet<ExampleData>(2, true), HashSet<ExampleData>(500, true)};
   for (unsigned int i = 0; i < sizeof(hash_sets) / sizeof(hash_sets[0]); i++) {
     HashSet<ExampleData> &hash_set = hash_sets[i];
+    CHECK(hash_set.IsMultiSet());
     LONGS_EQUAL(0, hash_set.GetSize());
     hash_set.Add(ExampleData("test"), false);
     LONGS_EQUAL(1, hash_set.GetSize());

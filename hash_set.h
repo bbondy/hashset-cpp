@@ -294,6 +294,13 @@ class HashSet {
     Init(old_bucket_count);
   }
 
+  /**
+   * Returns true if the hash_set is a multi_set
+   */
+  bool IsMultiSet() const {
+    return multi_set_;
+  }
+
  private:
   bool HasNewlineBefore(char *buffer, uint32_t buffer_size) {
     char *p = buffer;
