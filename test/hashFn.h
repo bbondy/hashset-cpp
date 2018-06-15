@@ -3,8 +3,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef HASHFN_H_
-#define HASHFN_H_
+#ifndef TEST_HASHFN_H_
+#define TEST_HASHFN_H_
 
 #include "../base.h"
 
@@ -73,4 +73,4 @@ class HashFn {
   uint64Array precomputedPowers;
 };
 
-#endif  // HASHFN_H_
+#endif  // TEST_HASHFN_H_
