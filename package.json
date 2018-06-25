@@ -1,18 +1,16 @@
 {
-  "name": "hashset-cpp",
+  "name": "hashset-cpp-v10",
   "main": "./build/Release/hashset-cpp",
-  "version": "1.0.18",
+  "version": "1.0.0",
   "description": "",
   "directories": {
     "test": "test"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
-    "node-gyp": "^3.4.0",
-    "pre-commit": "^1.1.2",
     "cppunitlite": "^1.0.0",
-    "nan": "^2.2.1"
+    "nan": "^2.2.1",
+    "node-gyp": "^3.4.0"
   },
   "scripts": {
     "install": "node-gyp rebuild",
@@ -21,16 +19,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bbondy/hashset-cpp.git"
+    "url": "git+https://github.com/dbellavista/hashset-cpp.git"
   },
   "author": "Brian R. Bondy <netzen@gmail.com> (http://www.brianbondy.com)",
   "license": "MPL-2.0",
   "gypfile": true,
   "bugs": {
-    "url": "https://github.com/bbondy/hashset-cpp/issues"
+    "url": "https://github.com/dbellavista/hashset-cpp/issues"
   },
-  "homepage": "https://github.com/bbondy/hashset-cpp#readme",
-  "pre-commit": [
-    "lint"
-  ]
+  "homepage": "https://github.com/dbellavista/hashset-cpp#readme"
 }

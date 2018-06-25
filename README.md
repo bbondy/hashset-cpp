@@ -1,4 +1,6 @@
-[![Build Status](https://travis-ci.org/bbondy/hashset-cpp.svg?branch=master)](https://travis-ci.org/bbondy/hashset-cpp)
+#fork
+
+This is a fork to make hashset-cpp work with with node v10
 
 #hashset-cpp
 
