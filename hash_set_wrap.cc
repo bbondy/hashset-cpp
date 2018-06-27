@@ -58,12 +58,15 @@ void HashSetWrap::New(const FunctionCallbackInfo<Value>& args) {
     const int argc = 1;
     Local<Value> argv[argc] = { args[0] };
     Local<Function> cons = Local<Function>::New(isolate, constructor);
-    args.GetReturnValue().Set(cons->NewInstance(argc, argv));
+    args.GetReturnValue().Set(
+        cons->NewInstance(isolate->GetCurrentContext(), argc, argv)
+            .ToLocalChecked());
   }
 }
 
 void HashSetWrap::AddItem(const FunctionCallbackInfo<Value>& args) {
-  String::Utf8Value str(args[0]->ToString());
+  Isolate* isolate = args.GetIsolate();
+  String::Utf8Value str(isolate, args[0]->ToString());
   const char * buffer = *str;
 
   HashSetWrap* obj = ObjectWrap::Unwrap<HashSetWrap>(args.Holder());
@@ -72,7 +75,7 @@ void HashSetWrap::AddItem(const FunctionCallbackInfo<Value>& args) {
 
 void HashSetWrap::ItemExists(const FunctionCallbackInfo<Value>& args) {
   Isolate* isolate = args.GetIsolate();
-  String::Utf8Value str(args[0]->ToString());
+  String::Utf8Value str(isolate, args[0]->ToString());
   const char * buffer = *str;
 
   HashSetWrap* obj = ObjectWrap::Unwrap<HashSetWrap>(args.Holder());
