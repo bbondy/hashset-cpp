@@ -14,6 +14,7 @@
     "nan": "^2.2.1"
   },
   "scripts": {
+    "build": "make",
     "install": "node-gyp rebuild",
     "test": "make test",
     "lint": "./scripts/cpplint.py"
