@@ -40,9 +40,10 @@ void HashSetWrap::Init(Local<Object> exports) {
   NODE_SET_PROTOTYPE_METHOD(tpl, "add", HashSetWrap::AddItem);
   NODE_SET_PROTOTYPE_METHOD(tpl, "exists", HashSetWrap::ItemExists);
 
-  constructor.Reset(isolate, tpl->GetFunction());
+  constructor.Reset(isolate,
+    tpl->GetFunction(isolate->GetCurrentContext()).ToLocalChecked());
   exports->Set(String::NewFromUtf8(isolate, "HashSet"),
-               tpl->GetFunction());
+    tpl->GetFunction(isolate->GetCurrentContext()).ToLocalChecked());
 }
 
 void HashSetWrap::New(const FunctionCallbackInfo<Value>& args) {
@@ -59,14 +60,16 @@ void HashSetWrap::New(const FunctionCallbackInfo<Value>& args) {
     Local<Value> argv[argc] = { args[0] };
     Local<Function> cons = Local<Function>::New(isolate, constructor);
     args.GetReturnValue().Set(
-        cons->NewInstance(isolate->GetCurrentContext(), argc, argv)
-            .ToLocalChecked());
+      cons->NewInstance(isolate->GetCurrentContext(), argc, argv)
+        .ToLocalChecked());
   }
 }
 
 void HashSetWrap::AddItem(const FunctionCallbackInfo<Value>& args) {
   Isolate* isolate = args.GetIsolate();
-  String::Utf8Value str(isolate, args[0]->ToString());
+  String::Utf8Value str(isolate,
+    args[0]->ToString(isolate->GetCurrentContext())
+      .FromMaybe(v8::Local<v8::String>()));
   const char * buffer = *str;
 
   HashSetWrap* obj = ObjectWrap::Unwrap<HashSetWrap>(args.Holder());
@@ -75,7 +78,9 @@ void HashSetWrap::AddItem(const FunctionCallbackInfo<Value>& args) {
 
 void HashSetWrap::ItemExists(const FunctionCallbackInfo<Value>& args) {
   Isolate* isolate = args.GetIsolate();
-  String::Utf8Value str(isolate, args[0]->ToString());
+  String::Utf8Value str(isolate,
+    args[0]->ToString(isolate->GetCurrentContext())
+      .FromMaybe(v8::Local<v8::String>()));
   const char * buffer = *str;
 
   HashSetWrap* obj = ObjectWrap::Unwrap<HashSetWrap>(args.Holder());
