@@ -6,7 +6,9 @@
       "../main.cc",
       "../hash_set.cc",
       "../hash_set.h",
-      "../test/example_data.h"
+      "../hashFn.cc",
+      "../hashFn.h",
+      "../test/example_data.h",
     ],
     "include_dirs": [
       "..",
