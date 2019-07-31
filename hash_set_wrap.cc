@@ -50,7 +50,7 @@ void HashSetWrap::Init(Local<Object> exports) {
 
   constructor.Reset(isolate,
     tpl->GetFunction(isolate->GetCurrentContext()).ToLocalChecked());
-  CHECK_SET(exports->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "HashSetecp", NewStringType::kNormal).ToLocalChecked(),
+  CHECK_SET(exports->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "HashSet", NewStringType::kNormal).ToLocalChecked(),
   tpl->GetFunction(isolate->GetCurrentContext()).ToLocalChecked()));
 }
 
