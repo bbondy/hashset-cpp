@@ -41,7 +41,8 @@ void HashSetWrap::Init(Local<Object> exports) {
 
   // Prepare constructor template
   Local<FunctionTemplate> tpl = FunctionTemplate::New(isolate, New);
-  tpl->SetClassName(String::NewFromUtf8(isolate, "HashSet"));
+  //tpl->SetClassName(String::NewFromUtf8(isolate, "HashSet"));
+  tpl->SetClassName(String::NewFromUtf8(isolate, "HashSet", NewStringType::kNormal).ToLocalChecked());
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
 
   // Prototype
@@ -50,7 +51,7 @@ void HashSetWrap::Init(Local<Object> exports) {
 
   constructor.Reset(isolate,
     tpl->GetFunction(isolate->GetCurrentContext()).ToLocalChecked());
-  CHECK_SET(exports->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "HashSet", NewStringType::kNormal).ToLocalChecked(),
+  CHECK_SET(exports->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "HashSetecp", NewStringType::kNormal).ToLocalChecked(),
   tpl->GetFunction(isolate->GetCurrentContext()).ToLocalChecked()));
   // exports->Set(String::NewFromUtf8(isolate, "HashSet"),
   //   tpl->GetFunction(isolate->GetCurrentContext()).ToLocalChecked());
